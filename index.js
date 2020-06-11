@@ -57,6 +57,7 @@ resetBtn.addEventListener("click", () => resetTimer());
 startBtn.addEventListener("click", function() {
   startContainer.classList.add("hide-container", );
   countdownContainer.classList.remove("hide-container");
+  // load sound and play silently when start button is pressed, this is necessary to work on mobile ios/safari
   soundEffect.src = '';
   soundEffect.play();
   toggleVisibleButtons();
@@ -107,6 +108,7 @@ function startTimer() {
 function breakTimer() {
   let newTitle = "start"
   countdownSec.textContent = "00";
+  // load the sound with the mp3 added
   soundEffect.src = "alarm.mp3";
   soundEffect.play();
   toggleVisibleButtons();
