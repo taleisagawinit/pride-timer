@@ -43,6 +43,8 @@ let currentInterval = "study";
 // track whether timer is paused or not
 let pause = false;
 
+let soundEffect = new Audio();
+
 
 addStudyTime.addEventListener("click", () => increaseTime(45, "studyTime"));
 subtractStudyTime.addEventListener("click", () => decreaseTime(5, "studyTime"));
@@ -55,6 +57,7 @@ resetBtn.addEventListener("click", () => resetTimer());
 startBtn.addEventListener("click", function() {
   startContainer.classList.add("hide-container", );
   countdownContainer.classList.remove("hide-container");
+  soundEffect.play();
   toggleVisibleButtons();
   startTimer();
 })
@@ -102,8 +105,8 @@ function startTimer() {
 
 function breakTimer() {
   toggleVisibleButtons();
-  let alarm = new Audio("alarm.mp3");
-  alarm.play();
+  soundEffect.src = "alarm.mp3";
+  soundEffect.play();
   let newTitle = "start"
   countdownSec.textContent = "00";
 
