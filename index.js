@@ -57,6 +57,7 @@ resetBtn.addEventListener("click", () => resetTimer());
 startBtn.addEventListener("click", function() {
   startContainer.classList.add("hide-container", );
   countdownContainer.classList.remove("hide-container");
+  soundEffect.src = '';
   soundEffect.play();
   toggleVisibleButtons();
   startTimer();
