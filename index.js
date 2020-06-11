@@ -104,11 +104,11 @@ function startTimer() {
 
 
 function breakTimer() {
-  toggleVisibleButtons();
-  soundEffect.src = "alarm.mp3";
-  soundEffect.play();
   let newTitle = "start"
   countdownSec.textContent = "00";
+  soundEffect.src = "alarm.mp3";
+  soundEffect.play();
+  toggleVisibleButtons();
 
   if (currentInterval === "study") {
     countdownMins.textContent = Number(breakTime.textContent);
