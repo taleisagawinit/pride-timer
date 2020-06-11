@@ -39,80 +39,61 @@ let resetBtn = document.querySelector("#resetBtn");
 // run timer interval
 let runTimer;
 // track whether you are on a break or studying
-let currentInterval = "studyTime"; 
+let currentInterval = "study"; 
 // track whether timer is paused or not
 let pause = false;
 
 
-// add event listeners to buttons when adjusting study and break time
-addStudyTime.addEventListener("click", () => changeTime(45, "studyTime"));
-subtractStudyTime.addEventListener("click", () => changeTime(15, "studyTime"));
-addBreakTime.addEventListener("click", () => changeTime(30, "breakTime"));
-subtractBreakTime.addEventListener("click", () => changeTime(5, "breakTime"));
+addStudyTime.addEventListener("click", () => increaseTime(45, "studyTime"));
+subtractStudyTime.addEventListener("click", () => decreaseTime(5, "studyTime"));
+addBreakTime.addEventListener("click", () => increaseTime(30, "breakTime"));
+subtractBreakTime.addEventListener("click", () => decreaseTime(5, "breakTime"));
 
-// add event listener to start button
+pauseBtn.addEventListener("click", () => pauseTimer());
+resetBtn.addEventListener("click", () => resetTimer());
+
 startBtn.addEventListener("click", function() {
-   // replace start button with pause and reset button
-   // replace content with 1 single timer
-   startBtn.classList.add("hide-container");
-   startContainer.classList.add("hide-container");
-   countdownBtns.classList.remove("hide-container");
-   countdownContainer.classList.remove("hide-container");
+  startContainer.classList.add("hide-container", );
+  countdownContainer.classList.remove("hide-container");
+  toggleVisibleButtons();
   startTimer();
 })
 
-// add event listener to pause button
-pauseBtn.addEventListener("click", () => pauseTimer());
-// add event listener to reset button
-resetBtn.addEventListener("click", () => resetTimer());
+
+function toggleVisibleButtons() {
+  startBtn.classList.toggle("hide-container");
+  countdownBtns.classList.toggle("hide-container");
+}
 
 
-function changeTime(mins, btnId) {
+function increaseTime(mins, btnId) {
   let btn = document.getElementById(btnId);
-  let btnStr = document.getElementById(btnId).textContent;
-  let btnNum = Number(btnStr.slice(0,2));
-  if (btnNum !== mins) {
-    switch (mins) {
-      case 45:
-        btn.textContent = (btnNum + 5);
-        break;
-      case 30:
-        btn.textContent = (btnNum + 5);
-        break;
-      case 15:
-        btn.textContent = (btnNum - 5);
-        break;
-      case 5:
-        if (btnNum === 10) {
-          btn.textContent = "05";
-        } else {
-          btn.textContent = (btnNum - 5);
-        }
-        break;
-      default:
-        console.log({ 
-          msg: "Oh no! This should not have happened",
-          data: mins, btnId
-        })
-        break;
-    }
+  let btnNum = Number(btn.textContent);
+  if (btnNum < mins) {
+    btn.textContent = (btnNum + 5);
+  }
+}
+
+function decreaseTime(mins, btnId) {
+  let btn = document.getElementById(btnId);
+  let btnNum = Number(btn.textContent);
+  if (btnNum === 10) {
+    btn.textContent = "05";
+  } else if (btnNum > mins) {
+    btn.textContent = (btnNum - 5);
   }
 }
 
 
 function startTimer() {
-  // replace title
-  if (currentInterval === "studyTime") {
-    title.textContent = "work";
-    // set the timer
-    countdownMins.textContent = Number(studyTime.textContent);
-    countdownSec.textContent = "00";
-  } else if (currentInterval === "breakTime") {
+  countdownSec.textContent = "00";
+
+  if (currentInterval === "study") {
+    title.textContent = "study";
+    countdownMins.textContent = Number(studyTime.textContent)
+  } else {
     title.textContent = "break";
     countdownMins.textContent = Number(breakTime.textContent);
-    countdownSec.textContent = "00";
-  } else {
-    console.log("Oops! Something went wrong.")
   }
 
   runTimer = setInterval(runTimerFn, 1000);
@@ -120,49 +101,68 @@ function startTimer() {
 
 
 function breakTimer() {
-  countdownBtns.classList.add("hide-container");
-  startBtn.classList.remove("hide-container");
+  toggleVisibleButtons();
+  let alarm = new Audio("alarm.mp3");
+  alarm.play();
+  let newTitle = "start"
+  countdownSec.textContent = "00";
 
-
-  if (currentInterval === "studyTime") {
-    title.textContent = "start break";
+  if (currentInterval === "study") {
     countdownMins.textContent = Number(breakTime.textContent);
-    countdownSec.textContent = "00";
-    currentInterval = "breakTime";
-  } else if (currentInterval === "breakTime") {
-    title.textContent = "start work";
-    countdownMins.textContent = Number(breakTime.textContent);
-    countdownSec.textContent = "00";
-    currentInterval = "studyTime";
-  } else {
-    console.log("Oops! Something went wrong.")
-  }
+    title.textContent = newTitle + "  break";
+    currentInterval = "break";
+    } else {
+    countdownMins.textContent = Number(studyTime.textContent);
+    title.textContent = newTitle + " studying";
+    currentInterval = "study";
+  } 
 
 }
 
 
-// todo: make sure i check for when minutes are less than 10, i have to add a "0" before the number
-// todo: make sure timer works when it reaches 00:00
 function runTimerFn() {
-  let maxSeconds = 59;
-  let minSeconds = 00;
+// if the timer is at 00:00, clear the interval and set it up for the next one
+  if (countdownMins.textContent === "00" && countdownSec.textContent === "00") {
+    clearInterval(runTimer);
+    breakTimer();
+    console.log("interval cleared");
+  } else {
+    let numMin = Number(countdownMins.textContent);
+    let numSec = Number(countdownSec.textContent)
+  
+  if (numSec < 1) {
+    countdownMins.textContent = updateMinutes(numMin);
+    countdownSec.textContent = updateSeconds(numSec);
+  } else {
+    countdownSec.textContent = updateSeconds(numSec);
+    }
+  }
 
-    if (countdownMins.textContent === "13") {
-      clearInterval(runTimer);
-      breakTimer();
-      console.log("interval cleared");
+  function updateMinutes(num) {
+    // check mins
+    let mins = num;
+    if (mins <= 10) {
+      return "0" + (mins-1);
+    } else if (mins === 1) {
+      return "00"
     } else {
-      if (countdownSec.textContent === "00") {
-        countdownMins.textContent = Number(countdownMins.textContent) - 1;
-        return countdownSec.textContent = maxSeconds;
-      } else if (Number(countdownSec.textContent) <= 10) {
-        return countdownSec.textContent = "0" + (Number(countdownSec.textContent) - 1);
-      } else if (Number(countdownSec.textContent) === 1) {
-        return countdownSec.textContent = minSeconds;
-      } else {
-        return countdownSec.textContent = Number(countdownSec.textContent) - 1;
-      }
-    }  
+      return mins - 1;
+    }
+  }
+
+  function updateSeconds(num) {
+    // check secs
+    let secs = num;
+    if (secs <= 10 && secs > 1) {
+      return "0" + (secs-1);
+    } else if (secs === 1) {
+      return "00"
+    } else if (secs < 1) {
+      return "59"
+    } else {
+      return secs - 1;
+    }
+  }
 
 }
 
@@ -170,29 +170,16 @@ function runTimerFn() {
 function resetTimer() {
   // make sure timer is cleared
   clearInterval(runTimer);
-
-  // hide pause button and reset button
-  // hide #countdown-timer h2
-  // show start-container
-  // show start button
-  startBtn.classList.remove("hide-container");
-  startContainer.classList.remove("hide-container");
-  countdownBtns.classList.add("hide-container");
+  toggleVisibleButtons();
+  startContainer.classList.remove("hide-container", );
   countdownContainer.classList.add("hide-container");
 
-  // change title back to pomodoro timer
   title.textContent = "pomodoro timer";
-
-  // change studyTime back to 25
   studyTime.textContent = "25";
-
-  // change breakTime back to 05
   breakTime.textContent = "05";
-
-  // change countdown mins and sec to 00
   countdownMins.textContent = "00";
   countdownSec.textContent = "00";
-
+  currentInterval = "study";
 }
 
 function pauseTimer() {
@@ -207,6 +194,7 @@ function pauseTimer() {
   }
   
 }
+
 
 
 

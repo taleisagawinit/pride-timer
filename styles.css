@@ -1,5 +1,7 @@
 body {
-  background-color: #e8e8e8;
+  /* background-color: #e8e8e8; */
+  background: linear-gradient(90deg, #83a4d4 0%, #b6fbff 100%);
+
   font-family: "Fredoka One", sans-serif;
 }
 
