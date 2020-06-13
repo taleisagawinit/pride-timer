@@ -45,9 +45,11 @@ let pause = false;
 
 let soundEffect = new Audio();
 
+let currentTimeLeftInSeconds;
+
 
 addStudyTime.addEventListener("click", () => increaseTime(45, "studyTime"));
-subtractStudyTime.addEventListener("click", () => decreaseTime(5, "studyTime"));
+subtractStudyTime.addEventListener("click", () => decreaseTime(15, "studyTime"));
 addBreakTime.addEventListener("click", () => increaseTime(30, "breakTime"));
 subtractBreakTime.addEventListener("click", () => decreaseTime(5, "breakTime"));
 
@@ -95,10 +97,12 @@ function startTimer() {
 
   if (currentInterval === "study") {
     title.textContent = "study";
-    countdownMins.textContent = Number(studyTime.textContent)
+    countdownMins.textContent = Number(studyTime.textContent);
+    currentTimeLeftInSeconds = Number(studyTime.textContent) * 60;
   } else {
     title.textContent = "break";
     countdownMins.textContent = Number(breakTime.textContent);
+    currentTimeLeftInSeconds = Number(breakTime.textContent) * 60;
   }
 
   runTimer = setInterval(runTimerFn, 1000);
@@ -115,10 +119,12 @@ function breakTimer() {
 
   if (currentInterval === "study") {
     countdownMins.textContent = Number(breakTime.textContent);
+    currentTimeLeftInSeconds = Number(breakTime.textContent) * 60;
     title.textContent = newTitle + "  break";
     currentInterval = "break";
     } else {
     countdownMins.textContent = Number(studyTime.textContent);
+    currentTimeLeftInSeconds = Number(studyTime.textContent) * 60;
     title.textContent = newTitle + " studying";
     currentInterval = "study";
   } 
@@ -127,49 +133,27 @@ function breakTimer() {
 
 
 function runTimerFn() {
-// if the timer is at 00:00, clear the interval and set it up for the next one
-  if (countdownMins.textContent === "00" && countdownSec.textContent === "00") {
+  currentTimeLeftInSeconds--;
+
+  if (currentTimeLeftInSeconds > 1) {
+    countdownMins.textContent = checkIfLessThan10(Math.floor(currentTimeLeftInSeconds/60));
+    countdownSec.textContent = checkIfLessThan10(currentTimeLeftInSeconds%60);
+  } else {
+    countdownMins.textContent = 00;
+    countdownSec.textContent = 00;
     clearInterval(runTimer);
     breakTimer();
     console.log("interval cleared");
-  } else {
-    let numMin = Number(countdownMins.textContent);
-    let numSec = Number(countdownSec.textContent)
-  
-  if (numSec < 1) {
-    countdownMins.textContent = updateMinutes(numMin);
-    countdownSec.textContent = updateSeconds(numSec);
-  } else {
-    countdownSec.textContent = updateSeconds(numSec);
-    }
   }
 
-  function updateMinutes(num) {
-    // check mins
-    let mins = num;
-    if (mins <= 10) {
-      return "0" + (mins-1);
-    } else if (mins === 1) {
-      return "00"
+  // change format to 2 digits, ex. 09:05 instead of 9:5
+  function checkIfLessThan10(num) {
+    if (num < 10) {
+      return "0" + num
     } else {
-      return mins - 1;
+      return num
     }
   }
-
-  function updateSeconds(num) {
-    // check secs
-    let secs = num;
-    if (secs <= 10 && secs > 1) {
-      return "0" + (secs-1);
-    } else if (secs === 1) {
-      return "00"
-    } else if (secs < 1) {
-      return "59"
-    } else {
-      return secs - 1;
-    }
-  }
-
 }
 
 
