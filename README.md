@@ -3,7 +3,7 @@ Pomodoro timer with a pride theme 🌈 I have been using a timer to study lately
 
 ![pomodoro timer screenshot][screenshot]
 
-[screenshot]: https://github.com/taleisagawinit/pride-timer/images/screenshot.png "Timer App"
+[screenshot]: https://github.com/taleisagawinit/pride-timer/raw/master/images/screenshot.png "Timer App"
 
 ## Getting Started
 
