@@ -47,15 +47,17 @@ let soundEffect = new Audio();
 
 let currentTimeLeftInSeconds;
 
-
+// when buttons are clicked, either add or subtract time in 5 minute intervals 
 addStudyTime.addEventListener("click", () => increaseTime(45, "studyTime"));
 subtractStudyTime.addEventListener("click", () => decreaseTime(15, "studyTime"));
 addBreakTime.addEventListener("click", () => increaseTime(30, "breakTime"));
 subtractBreakTime.addEventListener("click", () => decreaseTime(5, "breakTime"));
 
+// pause or reset timer when buttons are clicked
 pauseBtn.addEventListener("click", () => pauseTimer());
 resetBtn.addEventListener("click", () => resetTimer());
 
+// when start button is clicked, show the countdown timer and hide the buttons for adjusting the intervals
 startBtn.addEventListener("click", function() {
   startContainer.classList.add("hide-container", );
   countdownContainer.classList.remove("hide-container");
